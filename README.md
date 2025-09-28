@@ -1,6 +1,6 @@
-## Welcome! 
+## Welcome to `prism`! 
 
-Make your unit testing a bit easier on the eyes.
+Make your unit testing a bit easier on the eyes. Prism works anywhere `go test` works, so it can be quickly integrated into any project using Go v1.24 or higher (that's when `-json` was introduced). 
 
 ![prism demo](./demo.gif)
 
@@ -11,6 +11,7 @@ Make your unit testing a bit easier on the eyes.
 - Go to the `Releases` tab of the repo [here](https://github.com/DaltonSW/prism/releases)
 - Download the latest archive for your OS/architecture
 - Extract it and place the resulting binary on your `$PATH` and ensure it is executable
+
 ```sh
 cd ~/Downloads # Assuming you downloaded it here
 tar -xvf prism_[whatever].tar.gz # x: Extract; v: Verbose output; f: Specify filename
