@@ -1,20 +1,44 @@
-# Prism
+## Welcome! 
 
-Prism is a wrapper around `go test` to make it simple and beautiful.
+Make your unit testing a bit easier on the eyes.
+
+![prism demo](./demo.gif)
 
 ## Installation
 
-```bash
-go install go.dalton.dog/prism
+### Github Releases 🐙
+
+- Go to the `Releases` tab of the repo [here](https://github.com/DaltonSW/prism/releases)
+- Download the latest archive for your OS/architecture
+- Extract it and place the resulting binary on your `$PATH` and ensure it is executable
+```sh
+cd ~/Downloads # Assuming you downloaded it here
+tar -xvf prism_[whatever].tar.gz # x: Extract; v: Verbose output; f: Specify filename
+chmod +x prism # Make file executable
+mv prism [somewhere on your $PATH] # Move the file to somewhere on your path for easy execution
+```
+
+### Homebrew 🍺 
+
+- Have `brew` installed ([brew.sh](https://brew.sh))
+- Run the following:
+```sh
+brew install --cask daltonsw/tap/prism
+```
+
+### Go 🖥️ 
+
+- Have `Go` 
+- Have your `Go` install location on your `$PATH`
+- Run the following: 
+```sh
+go install go.dalton.dog/prism@latest
 ```
 
 ## Usage
 
-```bash
-prism [go test flags]
-```
+Just run `prism` in your module directory. Anywhere you'd run `go test`, use `prism` instead. That's it!
 
-### Flags
+`-v` -- Verbose output. Includes any additional output logged during tests
+`-f` -- Failed Only. Only gives information about tests that failed
 
-- `-v`, `--verbose`: Include test sub-output
-- `-f`, `--only-fails`: Only run failing tests
