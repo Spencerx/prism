@@ -39,6 +39,8 @@ go install go.dalton.dog/prism@latest
 
 Just run `prism` in your module directory. Anywhere you'd run `go test`, use `prism` instead. That's it!
 
-`-v` -- Verbose output. Includes any additional output logged during tests
-`-f` -- Failed Only. Only gives information about tests that failed
+`-v` -- Verbose output. Includes any additional output logged during tests  
+`-f` -- Failed Only. Only gives information about tests that failed  
+
+Anything else will be appended directly to `go test -json`
 
