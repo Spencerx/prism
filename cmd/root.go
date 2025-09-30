@@ -9,6 +9,8 @@ import (
 	"go.dalton.dog/prism/internal"
 )
 
+var Version = "1.0.3"
+
 var rootCmd = &cobra.Command{
 	Use:   "prism",
 	Short: "Prism is a wrapper around go test to make it simple and beautiful",
@@ -19,7 +21,7 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	if err := fang.Execute(context.Background(), rootCmd, fang.WithoutCompletions()); err != nil {
+	if err := fang.Execute(context.Background(), rootCmd, fang.WithoutCompletions(), fang.WithVersion(Version)); err != nil {
 		os.Exit(1)
 	}
 }
