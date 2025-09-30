@@ -1,6 +1,8 @@
 ## Welcome to `prism`! 
 
-Make your unit testing a bit easier on the eyes. Prism works anywhere `go test` works, so it can be quickly integrated into any project using Go v1.24 or higher (that's when `-json` was introduced). 
+All I'm saying is that maybe people would be a bit more willing to write unit tests if they were prettier to look at... 💅
+
+Make your unit testing results not only easier on the parse, but downright pleasant to look at! Prism works anywhere `go test` works, so it can be quickly integrated into any project using Go v1.24 or higher (that's when `-json` was introduced). 
 
 ![prism demo](./demo.gif)
 
