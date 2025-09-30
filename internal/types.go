@@ -242,5 +242,5 @@ func displayOverallSummary(summary *TestSummary) string {
 		skipStyle.Render(fmt.Sprintf("%d skipped", summary.Skipped)),
 	)
 
-	return pkgTableStyle.Padding(1).Render(out)
+	return pkgTableStyle.Padding(1).Margin(0).Render(out)
 }
