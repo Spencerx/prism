@@ -33,7 +33,11 @@ func Execute(args []string) {
 	}
 
 	// Capture all display output as a single string and wrap it
-	displayResults(summary)
+	if summary.Total == 0 {
+		displayZeroState()
+	} else {
+		displayResults(summary)
+	}
 }
 
 func runTests(args []string) (*TestSummary, error) {

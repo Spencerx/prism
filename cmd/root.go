@@ -9,7 +9,7 @@ import (
 	"go.dalton.dog/prism/internal"
 )
 
-var Version = "1.0.3"
+var Version = "1.1"
 
 var rootCmd = &cobra.Command{
 	Use:   "prism",
