@@ -1,15 +1,21 @@
 package internal
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/charmbracelet/lipgloss/v2/compat"
 )
 
 // --- Lipgloss Styles ---
 var (
-	redColor    = lipgloss.Color("1")
-	greenColor  = lipgloss.Color("2")
-	yellowColor = lipgloss.Color("3")
+	redColor     = lipgloss.Color("1")
+	greenColor   = lipgloss.Color("2")
+	yellowColor  = lipgloss.Color("3")
+	blueColor    = lipgloss.Color("4")
+	magentaColor = lipgloss.Color("5")
+
+	cyanColor = lipgloss.Color("14")
 
 	// mainTextColor = compat.AdaptiveColor{Light: lipgloss.Color("0"), Dark: lipgloss.Color("15")}
 	subTextColor = compat.AdaptiveColor{Light: lipgloss.Color("8"), Dark: lipgloss.Color("8")}
@@ -40,7 +46,16 @@ var (
 			MarginBottom(1)
 )
 
-var PrismHeader = `         /\
+var Header = fmt.Sprintf("━━━━━◢◣ %v %v %v %v %v",
+	lipgloss.NewStyle().Foreground(redColor).Render("P"),
+	lipgloss.NewStyle().Foreground(yellowColor).Render("R"),
+	lipgloss.NewStyle().Foreground(greenColor).Render("I"),
+	lipgloss.NewStyle().Foreground(blueColor).Render("S"),
+	lipgloss.NewStyle().Foreground(magentaColor).Render("M"),
+)
+
+var PrismHeader = `         
+	 /\
         /  \ #########
        /    \ ########
  #### /      \ #######
@@ -48,3 +63,12 @@ var PrismHeader = `         /\
     /          \ #####
    /            \ ####
    ---------------`
+
+func displayZeroState() {
+	fmt.Println(lipgloss.NewStyle().
+		Padding(1).
+		Bold(true).
+		Foreground(redColor).
+		Render("No tests found. Get to writing!"),
+	)
+}

@@ -9,7 +9,7 @@ import (
 	"go.dalton.dog/prism/internal"
 )
 
-var Version = "1.0.3"
+var Version = "1.1b"
 
 var rootCmd = &cobra.Command{
 	Use:   "prism",
@@ -30,4 +30,8 @@ func init() {
 	internal.GlobalConfig = internal.Config{}
 	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.Verbose, "verbose", "v", false, "Include test sub-output")
 	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.OnlyFails, "only-fails", "f", false, "Only run failing tests")
+
+	// TODO:
+	// rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.Benchmark, "benchmark", "b", false, "Run benchmark tests")
+	// rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.AllTests, "all", "a", false, "Run all tests and benchmarks together")
 }
