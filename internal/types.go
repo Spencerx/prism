@@ -141,30 +141,26 @@ func displayResults(overallSummary *TestSummary) {
 		renderBlocks = append(renderBlocks, displayOverallSummary(overallSummary))
 	}
 
+	mainChunk := lipgloss.JoinVertical(lipgloss.Left, renderBlocks...)
+
 	// Join all blocks with two newlines for separation (a blank line between them)
-	fmt.Println(AppOverallOutputStyle.Render(lipgloss.JoinVertical(lipgloss.Left, renderBlocks...)))
+	fmt.Println(AppOverallOutputStyle.Render(lipgloss.JoinVertical(lipgloss.Left,
+		lipgloss.NewStyle().Width(lipgloss.Width(mainChunk)).AlignHorizontal(lipgloss.Center).PaddingBottom(1).Render(Header()),
+		mainChunk,
+	)))
 }
 
 // displayPackageBlock builds and returns the display string for a single package.
 // It returns a string without a trailing newline.
 func displayPackageBlock(pkgResults *PackageResults) string {
-	pkgHeader := lipgloss.JoinHorizontal(
-		lipgloss.Left,
-		pkgResults.Status.String(),
-		" ",
-		packageStyle.Render(pkgResults.Name),
-		" ",
-		durationStyle.Render(fmt.Sprintf("(%v)", pkgResults.Duration)),
-	)
+	pkgHeader := fmt.Sprintf("%v %v %v", pkgResults.Status.String(), packageStyle.Render(pkgResults.Name), durationStyle.Render(fmt.Sprintf("(%v)", pkgResults.Duration)))
 
-	pkgHeader = lipgloss.JoinVertical(lipgloss.Left, pkgHeader,
-		fmt.Sprintf(
-			"%d total • %s • %s • %s",
-			pkgResults.Total,
-			passStyle.Render(fmt.Sprintf("%d passed", pkgResults.Passed)),
-			failStyle.Render(fmt.Sprintf("%d failed", pkgResults.Failed)),
-			skipStyle.Render(fmt.Sprintf("%d skipped", pkgResults.Skipped)),
-		),
+	pkgTestResults := fmt.Sprintf(
+		"%d total • %s • %s • %s",
+		pkgResults.Total,
+		passStyle.Render(fmt.Sprintf("%d passed", pkgResults.Passed)),
+		failStyle.Render(fmt.Sprintf("%d failed", pkgResults.Failed)),
+		skipStyle.Render(fmt.Sprintf("%d skipped", pkgResults.Skipped)),
 	)
 
 	sort.Slice(pkgResults.Tests, func(i, j int) bool {
@@ -187,7 +183,7 @@ func displayPackageBlock(pkgResults *PackageResults) string {
 
 	t := table.New().
 		Border(lipgloss.HiddenBorder()).
-		Headers("RESULT", "DUR", "TEST").
+		BorderTop(false).BorderLeft(false).BorderBottom(false).BorderRight(false).
 		Rows(generateTestRows(pkgResults.Tests)...)
 
 	tableStr := t.Render()
@@ -196,8 +192,11 @@ func displayPackageBlock(pkgResults *PackageResults) string {
 
 	return lipgloss.JoinVertical(lipgloss.Left,
 		pkgHeader,
+		pkgTestResults,
 		separatorLine,
 		pkgTableStyle.Render(tableStr),
+		" ",
+		" ",
 	)
 }
 
@@ -241,6 +240,25 @@ func displayOverallSummary(summary *TestSummary) string {
 		failStyle.Render(fmt.Sprintf("%d failed", summary.Failed)),
 		skipStyle.Render(fmt.Sprintf("%d skipped", summary.Skipped)),
 	)
+	bar := renderProportionalBar(summary, lipgloss.Width(out))
+	out += "\n" + bar
+	return pkgTableStyle.AlignHorizontal(lipgloss.Left).MarginBottom(0).Render(out)
+}
 
-	return pkgTableStyle.Padding(1).Margin(0).Render(out)
+func renderProportionalBar(summary *TestSummary, width int) string {
+	passWidth := int(float64(summary.Passed) / float64(summary.Total) * float64(width))
+	failWidth := int(float64(summary.Failed) / float64(summary.Total) * float64(width))
+	skipWidth := width - passWidth - failWidth
+
+	passBar := lipgloss.NewStyle().
+		Foreground(greenColor).
+		Render(strings.Repeat("━", passWidth))
+	failBar := lipgloss.NewStyle().
+		Foreground(redColor).
+		Render(strings.Repeat("━", failWidth))
+	skipBar := lipgloss.NewStyle().
+		Foreground(yellowColor).
+		Render(strings.Repeat("━", skipWidth))
+
+	return lipgloss.JoinHorizontal(lipgloss.Top, passBar, failBar, skipBar)
 }

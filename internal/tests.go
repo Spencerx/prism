@@ -33,7 +33,6 @@ func Execute(args []string) {
 	}
 
 	// Capture all display output as a single string and wrap it
-	fmt.Println(Header + "\n")
 	if summary.Total == 0 {
 		displayZeroState()
 	} else {

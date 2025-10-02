@@ -37,22 +37,29 @@ var (
 	// AppOverallOutputStyle is the top-level style that wraps all the display output.
 	AppOverallOutputStyle = lipgloss.NewStyle().
 				AlignHorizontal(lipgloss.Center).
-				Margin(1)
+				MarginLeft(1)
 
 	// Style for the package test table
 	pkgTableStyle = lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			Align(lipgloss.Center).
-			MarginBottom(1)
+			Align(lipgloss.Center)
 )
 
-var Header = fmt.Sprintf("━━━━━◢◣ %v %v %v %v %v",
+var HeaderStr = fmt.Sprintf("━━━━━▲%v%v%v%v%v\n",
 	lipgloss.NewStyle().Foreground(redColor).Render("P"),
 	lipgloss.NewStyle().Foreground(yellowColor).Render("R"),
 	lipgloss.NewStyle().Foreground(greenColor).Render("I"),
 	lipgloss.NewStyle().Foreground(blueColor).Render("S"),
 	lipgloss.NewStyle().Foreground(magentaColor).Render("M"),
 )
+
+var FigletHeaderOne = lipgloss.NewStyle().Foreground(redColor).Render(` ____  ____  ____  ___  __  __ `)
+var FigletHeaderTwo = lipgloss.NewStyle().Foreground(yellowColor).Render(`(  _ \(  _ \(_  _)/ __)(  \/  )`)
+var FigletHeaderThr = lipgloss.NewStyle().Foreground(greenColor).Render(` )___/ )   / _)(_ \__ \ )    ( `)
+var FigletHeaderFou = lipgloss.NewStyle().Foreground(blueColor).Render(`(__)  (_)\_)(____)(___/(_/\/\_)`)
+
+func Header() string {
+	return lipgloss.JoinVertical(lipgloss.Center, FigletHeaderOne, FigletHeaderTwo, FigletHeaderThr, FigletHeaderFou)
+}
 
 var PrismHeader = `         
 	 /\
