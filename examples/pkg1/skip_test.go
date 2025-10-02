@@ -18,5 +18,5 @@ func TestSkippedConditional(t *testing.T) {
 
 func TestSkippedWithReason(t *testing.T) {
 	t.Log("Checking prerequisites...")
-	t.Skip("Feature not implemented yet - TODO: implement feature X")
+	t.Skip("TODO: implement feature X")
 }
