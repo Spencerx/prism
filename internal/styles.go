@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 
+	"github.com/charmbracelet/fang"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/charmbracelet/lipgloss/v2/compat"
 )
@@ -49,14 +50,6 @@ var (
 			Align(lipgloss.Center)
 )
 
-var HeaderStr = fmt.Sprintf("━━━━━▲%v%v%v%v%v\n",
-	lipgloss.NewStyle().Foreground(redColor).Render("P"),
-	lipgloss.NewStyle().Foreground(yellowColor).Render("R"),
-	lipgloss.NewStyle().Foreground(greenColor).Render("I"),
-	lipgloss.NewStyle().Foreground(blueColor).Render("S"),
-	lipgloss.NewStyle().Foreground(magentaColor).Render("M"),
-)
-
 var FigletHeaderOne = lipgloss.NewStyle().Foreground(redColor).Render(` ____  ____  ____  ___  __  __ `)
 var FigletHeaderTwo = lipgloss.NewStyle().Foreground(yellowColor).Render(`(  _ \(  _ \(_  _)/ __)(  \/  )`)
 var FigletHeaderThr = lipgloss.NewStyle().Foreground(greenColor).Render(` )___/ )   / _)(_ \__ \ )    ( `)
@@ -66,15 +59,7 @@ func Header() string {
 	return lipgloss.JoinVertical(lipgloss.Center, FigletHeaderOne, FigletHeaderTwo, FigletHeaderThr, FigletHeaderFou, "")
 }
 
-var PrismHeader = `         
-	 /\
-        /  \ #########
-       /    \ ########
- #### /      \ #######
-     /        \ ######
-    /          \ #####
-   /            \ ####
-   ---------------`
+var FangStyle = fang.ColorScheme{}
 
 func displayZeroState() {
 	fmt.Println(lipgloss.NewStyle().

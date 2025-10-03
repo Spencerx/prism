@@ -8,19 +8,6 @@ Make your unit testing results not only easier on the parse, but downright pleas
 
 ## Installation
 
-### Github Releases 🐙
-
-- Go to the `Releases` tab of the repo [here](https://github.com/DaltonSW/prism/releases)
-- Download the latest archive for your OS/architecture
-- Extract it and place the resulting binary on your `$PATH` and ensure it is executable
-
-```sh
-cd ~/Downloads # Assuming you downloaded it here
-tar -xvf prism_[whatever].tar.gz # x: Extract; v: Verbose output; f: Specify filename
-chmod +x prism # Make file executable
-mv prism [somewhere on your $PATH] # Move the file to somewhere on your path for easy execution
-```
-
 ### Homebrew 🍺 
 
 - Have `brew` installed ([brew.sh](https://brew.sh))
@@ -37,6 +24,20 @@ brew install --cask daltonsw/tap/prism
 ```sh
 go install go.dalton.dog/prism@latest
 ```
+
+### Github Releases 🐙
+
+- Go to the `Releases` tab of the repo [here](https://github.com/DaltonSW/prism/releases)
+- Download the latest archive for your OS/architecture
+- Extract it and place the resulting binary on your `$PATH` and ensure it is executable
+
+```sh
+cd ~/Downloads # Assuming you downloaded it here
+tar -xvf prism_[whatever].tar.gz # x: Extract; v: Verbose output; f: Specify filename
+chmod +x prism # Make file executable
+mv prism [somewhere on your $PATH] # Move the file to somewhere on your path for easy execution
+```
+
 
 ## Usage
 

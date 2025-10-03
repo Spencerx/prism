@@ -197,7 +197,8 @@ func runBenchmarks(args []string) (*BenchmarkSummary, error) {
 	}
 
 	summary := &BenchmarkSummary{
-		Results: make([]*BenchmarkResult, 0),
+		Results:    make([]*BenchmarkResult, 0),
+		PackageEnv: make(map[string]*BenchmarkPackageEnv),
 	}
 	benchmarkMap := make(map[string]*BenchmarkResult)
 

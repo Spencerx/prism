@@ -7,7 +7,6 @@ Set FontFamily "MartianMono NFM"
 Set FontSize 14
 
 Hide
-Type "go build ." Enter
 Type "go install ." Enter
 Type "clear" Enter
 Show
@@ -22,4 +21,4 @@ Type "prism -f ./examples/pkg1 ./examples/pkg3" Enter
 Sleep 5
 
 Type "prism ./examples/empty_dir" Enter
-Sleep 5
+Sleep 8

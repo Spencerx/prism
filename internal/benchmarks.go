@@ -15,12 +15,19 @@ import (
 
 type BenchmarkSummary struct {
 	sync.Mutex
-	Results   []*BenchmarkResult
-	Total     int
-	Succeeded int
-	Failed    int
-	Skipped   int
-	Duration  time.Duration
+	Results    []*BenchmarkResult
+	Total      int
+	Succeeded  int
+	Failed     int
+	Skipped    int
+	Duration   time.Duration
+	PackageEnv map[string]*BenchmarkPackageEnv
+}
+
+type BenchmarkPackageEnv struct {
+	Goos   string
+	Goarch string
+	CPU    string
 }
 
 type BenchmarkResult struct {
@@ -40,11 +47,15 @@ type BenchmarkResult struct {
 type BenchmarkPackageResults struct {
 	Name       string
 	Benchmarks []*BenchmarkResult
-	Total      int
-	Passed     int
-	Failed     int
-	Skipped    int
-	Duration   time.Duration
+
+	Total   int
+	Passed  int
+	Failed  int
+	Skipped int
+	Groups  int
+
+	Duration time.Duration
+	Env      *BenchmarkPackageEnv
 }
 
 type benchmarkLine struct {
@@ -67,6 +78,9 @@ func displayBenchmarkResults(summary *BenchmarkSummary) {
 		}
 
 		pkg := grouped[pkgName]
+		if env, ok := summary.PackageEnv[pkgName]; ok {
+			pkg.Env = env
+		}
 		pkg.Benchmarks = append(pkg.Benchmarks, result)
 		pkg.Total++
 		switch result.Status {
@@ -138,6 +152,7 @@ func displayBenchmarkPackageBlock(pkg *BenchmarkPackageResults) string {
 	for _, bench := range displayResults {
 		if bench.Status == StatusRunning {
 			bench.Status = StatusGroup
+			pkg.Groups++
 		}
 		row := []string{
 			bench.Status.String(),
@@ -210,18 +225,26 @@ func displayBenchmarkPackageBlock(pkg *BenchmarkPackageResults) string {
 		summaryParts = append(summaryParts, skipStyle.Render(fmt.Sprintf("%d skipped", pkg.Skipped)))
 	}
 
-	pkgSummary := fmt.Sprintf("%d benchmarks • %s", pkg.Total, strings.Join(summaryParts, " • "))
+	pkgSummary := fmt.Sprintf("%d benchmarks • %s", pkg.Total-pkg.Groups, strings.Join(summaryParts, " • "))
+	envLine := formatBenchmarkPackageEnv(pkg.Env)
 
 	separatorLine := packageSeparatorStyle.Render(strings.Repeat("─", max(lipgloss.Width(tableStr), lipgloss.Width(pkgHeader))))
 
-	return lipgloss.JoinVertical(lipgloss.Left,
+	lines := []string{
 		pkgHeader,
 		benchmarkMetricStyle.Render(pkgSummary),
+	}
+	if envLine != "" {
+		lines = append(lines, benchmarkMetricStyle.Render(envLine))
+	}
+	lines = append(lines,
 		separatorLine,
 		pkgTableStyle.Render(tableStr),
 		" ",
 		" ",
 	)
+
+	return lipgloss.JoinVertical(lipgloss.Left, lines...)
 }
 
 func displayBenchmarkOverallSummary(summary *BenchmarkSummary) string {
@@ -238,12 +261,38 @@ func displayBenchmarkOverallSummary(summary *BenchmarkSummary) string {
 	return pkgTableStyle.AlignHorizontal(lipgloss.Left).MarginBottom(0).Render(out)
 }
 
+func formatBenchmarkPackageEnv(env *BenchmarkPackageEnv) string {
+	if env == nil {
+		return ""
+	}
+
+	parts := make([]string, 0, 3)
+	if env.Goos != "" {
+		parts = append(parts, fmt.Sprintf("OS: %s", env.Goos))
+	}
+	if env.Goarch != "" {
+		parts = append(parts, fmt.Sprintf("Arch: %s", env.Goarch))
+	}
+	if env.CPU != "" {
+		parts = append(parts, fmt.Sprintf("CPU: %s", env.CPU))
+	}
+
+	return strings.Join(parts, " • ")
+}
+
 func displayZeroBenchmarks() {
 	fmt.Println(benchmarkNoticeStyle.Render("No benchmarks found. Add Benchmark functions to your tests!"))
 }
 
 func processBenchmarkEvent(event *TestEvent, benchmarkMap map[string]*BenchmarkResult, summary *BenchmarkSummary) {
-	if event.Test == "" || !strings.HasPrefix(event.Test, "Benchmark") {
+	if event.Test == "" {
+		if Status(event.Action) == StatusOutput {
+			updateBenchmarkPackageMetadata(summary, event.Package, event.Output)
+		}
+		return
+	}
+
+	if !strings.HasPrefix(event.Test, "Benchmark") {
 		return
 	}
 
@@ -336,6 +385,42 @@ func processBenchmarkEvent(event *TestEvent, benchmarkMap map[string]*BenchmarkR
 			result.StartedAt = event.Time
 		}
 		summary.Unlock()
+	}
+}
+
+func updateBenchmarkPackageMetadata(summary *BenchmarkSummary, pkgName, output string) {
+	line := strings.TrimSpace(output)
+	if line == "" || pkgName == "" {
+		return
+	}
+
+	parts := strings.SplitN(line, ":", 2)
+	if len(parts) != 2 {
+		return
+	}
+
+	key := strings.ToLower(strings.TrimSpace(parts[0]))
+	value := strings.TrimSpace(parts[1])
+	if value == "" {
+		return
+	}
+
+	summary.Lock()
+	defer summary.Unlock()
+
+	env, ok := summary.PackageEnv[pkgName]
+	if !ok {
+		env = &BenchmarkPackageEnv{}
+		summary.PackageEnv[pkgName] = env
+	}
+
+	switch key {
+	case "goos":
+		env.Goos = value
+	case "goarch":
+		env.Goarch = value
+	case "cpu":
+		env.CPU = value
 	}
 }
 
