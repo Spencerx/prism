@@ -1,0 +1,16 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  demos:
+    cmds:
+      - vhs "./assets/bench.tape"
+      - vhs "./assets/demo.tape"
+      - vhs "./assets/only-fails.tape"
+      - vhs "./assets/simple.tape"
+      - vhs "./assets/verbose.tape"
+    silent: true

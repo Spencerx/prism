@@ -7,6 +7,7 @@ require (
 	github.com/charmbracelet/lipgloss/v2 v2.0.0-beta.3.0.20250917201909-41ff0bf215ea
 	github.com/charmbracelet/log v0.4.2
 	github.com/spf13/cobra v1.9.1
+	github.com/yarlson/pin v0.9.1
 )
 
 require (
