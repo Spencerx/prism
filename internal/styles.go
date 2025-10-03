@@ -24,9 +24,14 @@ var (
 	failStyle = lipgloss.NewStyle().Foreground(redColor).Bold(true)    // Light Red/Coral
 	skipStyle = lipgloss.NewStyle().Foreground(yellowColor).Bold(true) // Pale Yellow
 
-	packageStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("14")).Bold(true) // Light Aqua
-	testNameStyle = lipgloss.NewStyle()                                             // Off-white
-	durationStyle = lipgloss.NewStyle().Foreground(subTextColor)                    // Medium Gray
+	packageStyle  = lipgloss.NewStyle().Foreground(magentaColor).Bold(true) // Light Aqua
+	testNameStyle = lipgloss.NewStyle()                                     // Off-white
+	durationStyle = lipgloss.NewStyle().Foreground(subTextColor)            // Medium Gray
+
+	benchmarkLabelStyle  = lipgloss.NewStyle().Foreground(cyanColor).Bold(true)
+	benchmarkHeaderStyle = lipgloss.NewStyle().Foreground(subTextColor).Bold(true)
+	benchmarkMetricStyle = lipgloss.NewStyle().Foreground(subTextColor)
+	benchmarkNoticeStyle = lipgloss.NewStyle().Padding(1).Bold(true).Foreground(cyanColor)
 
 	outputStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("7")).Italic(true).MarginLeft(3)
 
@@ -58,7 +63,7 @@ var FigletHeaderThr = lipgloss.NewStyle().Foreground(greenColor).Render(` )___/ 
 var FigletHeaderFou = lipgloss.NewStyle().Foreground(blueColor).Render(`(__)  (_)\_)(____)(___/(_/\/\_)`)
 
 func Header() string {
-	return lipgloss.JoinVertical(lipgloss.Center, FigletHeaderOne, FigletHeaderTwo, FigletHeaderThr, FigletHeaderFou)
+	return lipgloss.JoinVertical(lipgloss.Center, FigletHeaderOne, FigletHeaderTwo, FigletHeaderThr, FigletHeaderFou, "")
 }
 
 var PrismHeader = `         
