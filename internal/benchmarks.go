@@ -209,7 +209,6 @@ func displayBenchmarkPackageBlock(pkg *BenchmarkPackageResults) string {
 	if pkg.Skipped > 0 {
 		summaryParts = append(summaryParts, skipStyle.Render(fmt.Sprintf("%d skipped", pkg.Skipped)))
 	}
-	summaryParts = append(summaryParts, durationStyle.Render(fmt.Sprintf("%v total", pkg.Duration.Truncate(time.Millisecond))))
 
 	pkgSummary := fmt.Sprintf("%d benchmarks • %s", pkg.Total, strings.Join(summaryParts, " • "))
 
