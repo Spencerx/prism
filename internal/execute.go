@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/yarlson/pin"
 )
 
 func Execute(args []string) {
@@ -27,7 +29,15 @@ func Execute(args []string) {
 	fmt.Println(AppOverallOutputStyle.Render(Header()))
 
 	if benchMode {
+		p := pin.New(" Running benchmarks...", pin.WithDoneSymbol('\r'), pin.WithPosition(pin.PositionRight))
+
+		cancel := p.Start(context.Background())
+		defer cancel()
+
 		summary, err := runBenchmarks(cmdArgs)
+
+		p.Stop("")
+
 		if err != nil {
 			fmt.Fprintf(
 				os.Stderr,
@@ -43,6 +53,7 @@ func Execute(args []string) {
 			displayBenchmarkResults(summary)
 		}
 	} else {
+		fmt.Println("") // After benchmark spinner stops, it'll leave an empty line. This mimics that
 		summary, err := runTests(cmdArgs)
 		if err != nil {
 			fmt.Fprintf(

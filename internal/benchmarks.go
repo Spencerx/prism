@@ -136,6 +136,9 @@ func displayBenchmarkPackageBlock(pkg *BenchmarkPackageResults) string {
 
 	rows := make([][]string, 0, len(displayResults))
 	for _, bench := range displayResults {
+		if bench.Status == StatusRunning {
+			bench.Status = StatusGroup
+		}
 		row := []string{
 			bench.Status.String(),
 			testNameStyle.Render(strings.TrimPrefix(bench.Name, "Benchmark")),
@@ -206,10 +209,6 @@ func displayBenchmarkPackageBlock(pkg *BenchmarkPackageResults) string {
 	if pkg.Skipped > 0 {
 		summaryParts = append(summaryParts, skipStyle.Render(fmt.Sprintf("%d skipped", pkg.Skipped)))
 	}
-	pending := pkg.Total - pkg.Passed - pkg.Failed - pkg.Skipped
-	if pending > 0 {
-		summaryParts = append(summaryParts, benchmarkMetricStyle.Render(fmt.Sprintf("%d pending", pending)))
-	}
 	summaryParts = append(summaryParts, durationStyle.Render(fmt.Sprintf("%v total", pkg.Duration.Truncate(time.Millisecond))))
 
 	pkgSummary := fmt.Sprintf("%d benchmarks • %s", pkg.Total, strings.Join(summaryParts, " • "))
@@ -233,10 +232,6 @@ func displayBenchmarkOverallSummary(summary *BenchmarkSummary) string {
 	}
 	if summary.Skipped > 0 {
 		summaryParts = append(summaryParts, skipStyle.Render(fmt.Sprintf("%d skipped", summary.Skipped)))
-	}
-	pending := summary.Total - summary.Succeeded - summary.Failed - summary.Skipped
-	if pending > 0 {
-		summaryParts = append(summaryParts, benchmarkMetricStyle.Render(fmt.Sprintf("%d pending", pending)))
 	}
 	summaryParts = append(summaryParts, durationStyle.Render(fmt.Sprintf("%v total", summary.Duration.Truncate(time.Millisecond))))
 

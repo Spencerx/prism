@@ -18,6 +18,7 @@ const (
 	StatusFail    Status = "fail"
 	StatusSkip    Status = "skip"
 	StatusOutput  Status = "output"
+	StatusGroup   Status = "group"   // Used for test/benchmark groups
 	StatusRunning Status = "running" // Internal status for tests currently executing
 )
 
