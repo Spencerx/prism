@@ -15,16 +15,20 @@ func TestWithBenchmark(t *testing.T) {
 }
 
 func BenchmarkStringConcat(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	i := 0
+	for b.Loop() {
 		_ = fmt.Sprintf("test%d", i)
+		i++
 	}
 }
 
 func BenchmarkStringBuilder(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	i := 0
+	for b.Loop() {
 		var sb strings.Builder
 		sb.WriteString("test")
 		sb.WriteString(fmt.Sprintf("%d", i))
 		_ = sb.String()
+		i++
 	}
 }
