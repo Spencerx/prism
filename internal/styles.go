@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 
+	"github.com/charmbracelet/fang"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/charmbracelet/lipgloss/v2/compat"
 )
@@ -24,9 +25,14 @@ var (
 	failStyle = lipgloss.NewStyle().Foreground(redColor).Bold(true)    // Light Red/Coral
 	skipStyle = lipgloss.NewStyle().Foreground(yellowColor).Bold(true) // Pale Yellow
 
-	packageStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("14")).Bold(true) // Light Aqua
-	testNameStyle = lipgloss.NewStyle()                                             // Off-white
-	durationStyle = lipgloss.NewStyle().Foreground(subTextColor)                    // Medium Gray
+	packageStyle  = lipgloss.NewStyle().Foreground(magentaColor).Bold(true) // Light Aqua
+	testNameStyle = lipgloss.NewStyle()                                     // Off-white
+	durationStyle = lipgloss.NewStyle().Foreground(subTextColor)            // Medium Gray
+
+	benchmarkLabelStyle  = lipgloss.NewStyle().Foreground(cyanColor).Bold(true)
+	benchmarkHeaderStyle = lipgloss.NewStyle().Foreground(subTextColor).Bold(true)
+	benchmarkMetricStyle = lipgloss.NewStyle().Foreground(subTextColor)
+	benchmarkNoticeStyle = lipgloss.NewStyle().Padding(1).Bold(true).Foreground(cyanColor)
 
 	outputStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("7")).Italic(true).MarginLeft(3)
 
@@ -44,32 +50,16 @@ var (
 			Align(lipgloss.Center)
 )
 
-var HeaderStr = fmt.Sprintf("━━━━━▲%v%v%v%v%v\n",
-	lipgloss.NewStyle().Foreground(redColor).Render("P"),
-	lipgloss.NewStyle().Foreground(yellowColor).Render("R"),
-	lipgloss.NewStyle().Foreground(greenColor).Render("I"),
-	lipgloss.NewStyle().Foreground(blueColor).Render("S"),
-	lipgloss.NewStyle().Foreground(magentaColor).Render("M"),
-)
-
 var FigletHeaderOne = lipgloss.NewStyle().Foreground(redColor).Render(` ____  ____  ____  ___  __  __ `)
 var FigletHeaderTwo = lipgloss.NewStyle().Foreground(yellowColor).Render(`(  _ \(  _ \(_  _)/ __)(  \/  )`)
 var FigletHeaderThr = lipgloss.NewStyle().Foreground(greenColor).Render(` )___/ )   / _)(_ \__ \ )    ( `)
 var FigletHeaderFou = lipgloss.NewStyle().Foreground(blueColor).Render(`(__)  (_)\_)(____)(___/(_/\/\_)`)
 
 func Header() string {
-	return lipgloss.JoinVertical(lipgloss.Center, FigletHeaderOne, FigletHeaderTwo, FigletHeaderThr, FigletHeaderFou)
+	return lipgloss.JoinVertical(lipgloss.Center, FigletHeaderOne, FigletHeaderTwo, FigletHeaderThr, FigletHeaderFou, "")
 }
 
-var PrismHeader = `         
-	 /\
-        /  \ #########
-       /    \ ########
- #### /      \ #######
-     /        \ ######
-    /          \ #####
-   /            \ ####
-   ---------------`
+var FangStyle = fang.ColorScheme{}
 
 func displayZeroState() {
 	fmt.Println(lipgloss.NewStyle().
