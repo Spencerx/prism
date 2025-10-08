@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	Version       = "1.3b"
+	Version       = "1.3"
 	configLoadErr error
 )
 
