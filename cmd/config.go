@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss/v2"
-	"github.com/charmbracelet/lipgloss/v2/table"
 	"github.com/spf13/cobra"
 
 	"go.dalton.dog/prism/internal"
@@ -18,21 +16,20 @@ var configCmd = &cobra.Command{
 	SilenceUsage: true,
 }
 
+var configClearCmd = &cobra.Command{
+	Use:   "clear",
+	Short: "Remove any prism config files/dirs",
+	Args:  cobra.ExactArgs(0),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return internal.ClearConfig()
+	},
+}
+
 var configShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Display current configuration",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		out := cmd.OutOrStdout()
-
-		table := table.New().
-			Rows(
-				[]string{"no_logo", fmt.Sprintf("%t", internal.GlobalConfig.NoLogo)},
-				[]string{"only_fails", fmt.Sprintf("%t", internal.GlobalConfig.OnlyFails)},
-				[]string{"verbose", fmt.Sprintf("%t", internal.GlobalConfig.Verbose)},
-			).
-			Border(lipgloss.HiddenBorder())
-
-		fmt.Fprintln(out, table.String())
+		internal.PrintConfig(internal.GlobalConfig)
 		return nil
 	},
 }
@@ -45,50 +42,18 @@ var configSetCmd = &cobra.Command{
 		key := strings.ToLower(args[0])
 		value := args[1]
 
-		switch key {
-		case "no-logo", "no_logo":
-			parsed, err := strconv.ParseBool(value)
-			if err != nil {
-				return fmt.Errorf("invalid boolean value %q: %w", value, err)
-			}
-			internal.GlobalConfig.NoLogo = parsed
-
-			if err := internal.SaveConfig(internal.GlobalConfig); err != nil {
-				return fmt.Errorf("save config: %w", err)
-			}
-			fmt.Fprintf(cmd.OutOrStdout(), "no_logo set to %t\n", parsed)
-			return nil
-		case "only-fails", "only_fails":
-			parsed, err := strconv.ParseBool(value)
-			if err != nil {
-				return fmt.Errorf("invalid boolean value %q: %w", value, err)
-			}
-			internal.GlobalConfig.OnlyFails = parsed
-
-			if err := internal.SaveConfig(internal.GlobalConfig); err != nil {
-				return fmt.Errorf("save config: %w", err)
-			}
-			fmt.Fprintf(cmd.OutOrStdout(), "only_fails set to %t\n", parsed)
-			return nil
-		case "verbose":
-			parsed, err := strconv.ParseBool(value)
-			if err != nil {
-				return fmt.Errorf("invalid boolean value %q: %w", value, err)
-			}
-			internal.GlobalConfig.Verbose = parsed
-
-			if err := internal.SaveConfig(internal.GlobalConfig); err != nil {
-				return fmt.Errorf("save config: %w", err)
-			}
-			fmt.Fprintf(cmd.OutOrStdout(), "verbose set to %t\n", parsed)
-			return nil
-		default:
-			return fmt.Errorf("unknown configuration key %q", args[0])
+		// This is fine at this level since all config settings are bools
+		parsed, err := strconv.ParseBool(value)
+		if err != nil {
+			return fmt.Errorf("Invalid boolean value %q: %w", value, err)
 		}
+
+		return internal.SetConfig(internal.GlobalConfig, key, parsed)
 	},
 }
 
 func init() {
+	configCmd.AddCommand(configClearCmd)
 	configCmd.AddCommand(configShowCmd)
 	configCmd.AddCommand(configSetCmd)
 	rootCmd.AddCommand(configCmd)
