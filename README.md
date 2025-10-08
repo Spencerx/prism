@@ -55,6 +55,8 @@ Just run `prism` in your module directory. Anywhere you'd run `go test`, use `pr
 
 ![fail-only demo](./assets/fails.gif)
 
+`--no-logo` -- Hides the logo from the output
+
 Anything else will be appended directly to `go test -json`
 
 ### Benchmarking
@@ -67,3 +69,12 @@ The first optional argument is a regex string and is appended to the normal `-be
 
 The second optional argument is the path, if you want to benchmark over something other than `./...`.  
 **If you want to pass a path, you MUST pass a regex string**
+
+### Configuration
+
+Running `prism config show` will show you the currently stored values for configuration  
+
+To change your defaults, run `prism config set [key] {true|false}` with any of the following keys:
+- `no-logo`
+- `fails-only`
+- `verbose`

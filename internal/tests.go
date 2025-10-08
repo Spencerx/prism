@@ -22,13 +22,6 @@ const (
 	StatusRunning Status = "running" // Internal status for tests currently executing
 )
 
-var GlobalConfig Config
-
-type Config struct {
-	Verbose   bool
-	OnlyFails bool
-}
-
 type Status string
 
 func (s Status) String() string {

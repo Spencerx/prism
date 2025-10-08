@@ -26,7 +26,9 @@ func Execute(args []string) {
 		cmdArgs = append(cmdArgs, args...)
 	}
 
-	fmt.Println(AppOverallOutputStyle.Render(Header()))
+	if !GlobalConfig.NoLogo {
+		fmt.Println(AppOverallOutputStyle.Render(Header()))
+	}
 
 	if benchMode {
 		p := pin.New(" Running benchmarks...",

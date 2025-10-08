@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/charmbracelet/fang"
@@ -10,7 +11,10 @@ import (
 	"go.dalton.dog/prism/internal"
 )
 
-var Version = "1.2b"
+var (
+	Version       = "1.3b"
+	configLoadErr error
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "prism",
@@ -25,13 +29,20 @@ Issues? Requests? Feedback? Let me know! -- github.com/DaltonSW/prism`,
 }
 
 func Execute() {
+	if configLoadErr != nil {
+		fmt.Fprintf(os.Stderr, "warning: unable to load persisted config: %v\n", configLoadErr)
+	}
 	if err := fang.Execute(context.Background(), rootCmd, fang.WithoutCompletions(), fang.WithVersion(Version)); err != nil {
 		os.Exit(1)
 	}
 }
 
 func init() {
-	internal.GlobalConfig = internal.Config{}
-	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.Verbose, "verbose", "v", false, "Include test sub-output")
-	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.OnlyFails, "only-fails", "f", false, "Only run failing tests")
+	var cfg internal.Config
+	cfg, configLoadErr = internal.LoadConfig()
+	internal.GlobalConfig = cfg
+
+	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.Verbose, "verbose", "v", internal.GlobalConfig.Verbose, "Include test sub-output")
+	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.OnlyFails, "only-fails", "f", internal.GlobalConfig.OnlyFails, "Only run failing tests")
+	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoLogo, "no-logo", internal.GlobalConfig.NoLogo, "Hide Prism logo header")
 }
