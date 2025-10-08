@@ -23,7 +23,6 @@ var configPathOverride = os.Getenv("PRISM_CONFIG_FILE")
 type Config struct {
 	Verbose   bool `json:"verbose"`
 	OnlyFails bool `json:"only_fails"`
-	NoLogo    bool `json:"no_logo"`
 	NoBar     bool `json:"no_bar"`
 	NoColor   bool `json:"no_color"`
 	ShowColor bool `json:"show_color"`
@@ -135,9 +134,6 @@ func SaveConfig(cfg Config) error {
 func SetConfig(cfg Config, key string, value bool) error {
 	var outBool string
 	switch key {
-	case "no_logo", "no-logo":
-		cfg.NoLogo = value
-		outBool = styleBool(cfg.NoLogo)
 	case "only_fails", "only-fails":
 		cfg.OnlyFails = value
 		outBool = styleBool(cfg.OnlyFails)
@@ -173,9 +169,9 @@ func SetConfig(cfg Config, key string, value bool) error {
 func PrintConfig(cfg Config) {
 	table := table.New().
 		Rows(
-			[]string{"no_logo", styleBool(cfg.NoLogo)},
 			[]string{"no_bar", styleBool(cfg.NoBar)},
 			[]string{"no_color", styleBool(cfg.NoColor)},
+			[]string{"show_color", styleBool(cfg.ShowColor)},
 			[]string{"only_fails", styleBool(cfg.OnlyFails)},
 			[]string{"verbose", styleBool(cfg.Verbose)},
 		).

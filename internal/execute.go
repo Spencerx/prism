@@ -27,10 +27,6 @@ func Execute(args []string) {
 		cmdArgs = append(cmdArgs, args...)
 	}
 
-	if !GlobalConfig.NoLogo {
-		lipgloss.Println(AppOverallOutputStyle.Render(Header()))
-	}
-
 	if benchMode {
 		p := pin.New(" Running benchmarks...",
 			pin.WithPosition(pin.PositionRight),
