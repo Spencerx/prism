@@ -17,10 +17,13 @@ Sleep 1
 Type "prism config show" Enter
 Sleep 2
 
-Type "prism config set no_logo true" Enter
+Type "prism config set verbose true" Enter
 Sleep 1
 
 Type "prism config set only_fails true" Enter
+Sleep 1
+
+Type "prism config set show_color false" Enter
 Sleep 1
 
 Type "prism config show" Enter

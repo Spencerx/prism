@@ -199,5 +199,9 @@ func styleBool(in bool) string {
 		style = style.Foreground(lipgloss.BrightRed)
 	}
 
+	if GlobalConfig.NoColor {
+		style = style.Foreground(lipgloss.NoColor{})
+	}
+
 	return style.Render(strings.ToTitle(fmt.Sprintf("%t", in)))
 }

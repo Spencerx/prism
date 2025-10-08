@@ -55,7 +55,7 @@ Just run `prism` in your module directory. Anywhere you'd run `go test`, use `pr
 
 ![fail-only demo](./assets/fails.gif)
 
-`--no-logo` -- Hides the logo from the output
+`--no-color` OR `--show-color` to force showing or hiding color
 
 Anything else will be appended directly to `go test -json`
 
@@ -75,6 +75,8 @@ The second optional argument is the path, if you want to benchmark over somethin
 Running `prism config show` will show you the currently stored values for configuration  
 
 To change your defaults, run `prism config set [key] {true|false}` with any of the following keys:
-- `no-logo`
-- `fails-only`
+- `fails_only`
 - `verbose`
+- `no_bar`
+- `no_color` (will set `show_color` to the opposite)
+- `show_color` (will set `no_color` to the opposite)
