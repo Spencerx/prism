@@ -30,8 +30,9 @@ Issues? Requests? Feedback? Let me know! -- github.com/DaltonSW/prism`,
 
 func Execute() {
 	if configLoadErr != nil {
-		fmt.Fprintf(os.Stderr, "warning: unable to load persisted config: %v\n", configLoadErr)
+		fmt.Fprintf(os.Stderr, "Unable to load persisted config: %v\n", configLoadErr)
 	}
+
 	if err := fang.Execute(context.Background(), rootCmd, fang.WithoutCompletions(), fang.WithVersion(Version)); err != nil {
 		os.Exit(1)
 	}
@@ -45,4 +46,5 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.Verbose, "verbose", "v", internal.GlobalConfig.Verbose, "Include test sub-output")
 	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.OnlyFails, "only-fails", "f", internal.GlobalConfig.OnlyFails, "Only run failing tests")
 	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoLogo, "no-logo", internal.GlobalConfig.NoLogo, "Hide Prism logo header")
+	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoBar, "no-bar", internal.GlobalConfig.NoBar, "Hide the summary bar at the end of test output")
 }

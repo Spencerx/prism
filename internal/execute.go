@@ -32,7 +32,6 @@ func Execute(args []string) {
 
 	if benchMode {
 		p := pin.New(" Running benchmarks...",
-			pin.WithDoneSymbol('\r'),
 			pin.WithPosition(pin.PositionRight),
 			pin.WithTextColor(pin.ColorCyan),
 			pin.WithSpinnerColor(pin.ColorMagenta),

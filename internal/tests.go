@@ -232,8 +232,9 @@ func displayOverallSummary(summary *TestSummary) string {
 		failStyle.Render(fmt.Sprintf("%d failed", summary.Failed)),
 		skipStyle.Render(fmt.Sprintf("%d skipped", summary.Skipped)),
 	)
-	bar := renderProportionalBar(summary, lipgloss.Width(out))
-	out += "\n" + bar
+	if !GlobalConfig.NoBar {
+		out += "\n" + renderProportionalBar(summary, lipgloss.Width(out))
+	}
 	return pkgTableStyle.AlignHorizontal(lipgloss.Left).MarginBottom(0).Render(out)
 }
 

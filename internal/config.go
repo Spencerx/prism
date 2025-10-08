@@ -24,6 +24,7 @@ type Config struct {
 	Verbose   bool `json:"verbose"`
 	OnlyFails bool `json:"only_fails"`
 	NoLogo    bool `json:"no_logo"`
+	NoBar     bool `json:"no_bar"`
 }
 
 // GlobalConfig holds the active configuration for the current process.
@@ -141,6 +142,9 @@ func SetConfig(cfg Config, key string, value bool) error {
 	case "verbose":
 		cfg.Verbose = value
 		outBool = styleBool(cfg.Verbose)
+	case "no_bar", "no-bar":
+		cfg.NoBar = value
+		outBool = styleBool(cfg.NoBar)
 	default:
 		return fmt.Errorf("unknown configuration key %q", key)
 	}
@@ -156,6 +160,7 @@ func PrintConfig(cfg Config) {
 	table := table.New().
 		Rows(
 			[]string{"no_logo", styleBool(cfg.NoLogo)},
+			[]string{"no_bar", styleBool(cfg.NoBar)},
 			[]string{"only_fails", styleBool(cfg.OnlyFails)},
 			[]string{"verbose", styleBool(cfg.Verbose)},
 		).
