@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"strconv"
 	"strings"
 
@@ -21,7 +23,12 @@ var configClearCmd = &cobra.Command{
 	Short: "Remove any prism config files/dirs",
 	Args:  cobra.ExactArgs(0),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return internal.ClearConfig()
+		err := internal.ClearConfig()
+		if err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return err
+		}
+
+		return nil
 	},
 }
 
