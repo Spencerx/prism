@@ -23,6 +23,12 @@ var rootCmd = &cobra.Command{
 
 Issues? Requests? Feedback? Let me know! -- github.com/DaltonSW/prism`,
 	Args: cobra.ArbitraryArgs,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if internal.GlobalConfig.NoColor || (os.Getenv("NO_COLOR") != "" && !internal.GlobalConfig.ShowColor) {
+			internal.GlobalConfig.NoLogo = true
+			internal.UnsetColors()
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.Execute(args)
 	},
@@ -47,4 +53,8 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.OnlyFails, "only-fails", "f", internal.GlobalConfig.OnlyFails, "Only run failing tests")
 	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoLogo, "no-logo", internal.GlobalConfig.NoLogo, "Hide Prism logo header")
 	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoBar, "no-bar", internal.GlobalConfig.NoBar, "Hide the summary bar at the end of test output")
+
+	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoColor, "no-color", internal.GlobalConfig.NoColor, "Disable color output entirely")
+	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.ShowColor, "color", internal.GlobalConfig.ShowColor, "Force color output, overridding NO_COLOR environment variable")
+	rootCmd.MarkFlagsMutuallyExclusive("no-color", "color")
 }

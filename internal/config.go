@@ -25,6 +25,8 @@ type Config struct {
 	OnlyFails bool `json:"only_fails"`
 	NoLogo    bool `json:"no_logo"`
 	NoBar     bool `json:"no_bar"`
+	NoColor   bool `json:"no_color"`
+	ShowColor bool `json:"show_color"`
 }
 
 // GlobalConfig holds the active configuration for the current process.
@@ -145,14 +147,26 @@ func SetConfig(cfg Config, key string, value bool) error {
 	case "no_bar", "no-bar":
 		cfg.NoBar = value
 		outBool = styleBool(cfg.NoBar)
+	case "no_color", "no-color":
+		cfg.NoColor = value
+		outBool = styleBool(cfg.NoColor)
+
+		cfg.ShowColor = !value
+		fmt.Printf("\n%v -> %v", "show_color", styleBool(cfg.ShowColor))
+	case "show_color", "show-color":
+		cfg.ShowColor = value
+		outBool = styleBool(cfg.ShowColor)
+
+		cfg.NoColor = !value
+		fmt.Printf("\n%v -> %v", "no_color", styleBool(cfg.NoColor))
 	default:
-		return fmt.Errorf("unknown configuration key %q", key)
+		return fmt.Errorf("Unknown configuration key %q", key)
 	}
 	if err := SaveConfig(cfg); err != nil {
 		return fmt.Errorf("Error saving config: %w", err)
 	}
 
-	fmt.Printf("%v -> %v\n\n", key, outBool)
+	fmt.Printf("\n%v -> %v\n\n", key, outBool)
 	return nil
 }
 
@@ -161,6 +175,7 @@ func PrintConfig(cfg Config) {
 		Rows(
 			[]string{"no_logo", styleBool(cfg.NoLogo)},
 			[]string{"no_bar", styleBool(cfg.NoBar)},
+			[]string{"no_color", styleBool(cfg.NoColor)},
 			[]string{"only_fails", styleBool(cfg.OnlyFails)},
 			[]string{"verbose", styleBool(cfg.Verbose)},
 		).

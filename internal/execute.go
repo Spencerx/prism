@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/yarlson/pin"
 )
 
@@ -27,7 +28,7 @@ func Execute(args []string) {
 	}
 
 	if !GlobalConfig.NoLogo {
-		fmt.Println(AppOverallOutputStyle.Render(Header()))
+		lipgloss.Println(AppOverallOutputStyle.Render(Header()))
 	}
 
 	if benchMode {
@@ -59,7 +60,7 @@ func Execute(args []string) {
 			displayBenchmarkResults(summary)
 		}
 	} else {
-		fmt.Println("") // After benchmark spinner stops, it'll leave an empty line. This mimics that
+		lipgloss.Println("") // After benchmark spinner stops, it'll leave an empty line. This mimics that
 		summary, err := runTests(cmdArgs)
 		if err != nil {
 			fmt.Fprintf(

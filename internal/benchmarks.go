@@ -126,7 +126,7 @@ func displayBenchmarkResults(summary *BenchmarkSummary) {
 
 	mainChunk := lipgloss.JoinVertical(lipgloss.Left, renderBlocks...)
 
-	fmt.Println(AppOverallOutputStyle.Render(mainChunk))
+	lipgloss.Println(AppOverallOutputStyle.Render(mainChunk))
 }
 
 func displayBenchmarkPackageBlock(pkg *BenchmarkPackageResults) string {
@@ -281,7 +281,7 @@ func formatBenchmarkPackageEnv(env *BenchmarkPackageEnv) string {
 }
 
 func displayZeroBenchmarks() {
-	fmt.Println(benchmarkNoticeStyle.Render("No benchmarks found. Add Benchmark functions to your tests!"))
+	lipgloss.Println(benchmarkNoticeStyle.Render("No benchmarks found. Add Benchmark functions to your tests!"))
 }
 
 func processBenchmarkEvent(event *TestEvent, benchmarkMap map[string]*BenchmarkResult, summary *BenchmarkSummary) {
