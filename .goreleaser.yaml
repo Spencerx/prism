@@ -28,14 +28,8 @@ homebrew_casks:
     repository:
       owner: DaltonSW
       name: homebrew-tap
-      branch: prism-update
+      branch: main
       token: "{{ .Env.GITHUB_TOKEN }}"
-      pull_request:
-        enabled: true
-        base:
-          owner: DaltonSW
-          name: homebrew-tap
-          branch: main
 
 archives:
   - formats: tar.gz
