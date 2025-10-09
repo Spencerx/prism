@@ -22,13 +22,6 @@ const (
 	StatusRunning Status = "running" // Internal status for tests currently executing
 )
 
-var GlobalConfig Config
-
-type Config struct {
-	Verbose   bool
-	OnlyFails bool
-}
-
 type Status string
 
 func (s Status) String() string {
@@ -142,7 +135,7 @@ func displayResults(overallSummary *TestSummary) {
 	mainChunk := lipgloss.JoinVertical(lipgloss.Left, renderBlocks...)
 
 	// Join all blocks with two newlines for separation (a blank line between them)
-	fmt.Println(AppOverallOutputStyle.Render(mainChunk))
+	lipgloss.Println(AppOverallOutputStyle.Render(mainChunk))
 }
 
 // displayPackageBlock builds and returns the display string for a single package.
@@ -239,25 +232,27 @@ func displayOverallSummary(summary *TestSummary) string {
 		failStyle.Render(fmt.Sprintf("%d failed", summary.Failed)),
 		skipStyle.Render(fmt.Sprintf("%d skipped", summary.Skipped)),
 	)
-	bar := renderProportionalBar(summary, lipgloss.Width(out))
-	out += "\n" + bar
+	if !GlobalConfig.NoBar {
+		out += "\n" + renderProportionalBar(summary, lipgloss.Width(out))
+	}
 	return pkgTableStyle.AlignHorizontal(lipgloss.Left).MarginBottom(0).Render(out)
 }
 
 func renderProportionalBar(summary *TestSummary, width int) string {
 	passWidth := int(float64(summary.Passed) / float64(summary.Total) * float64(width))
 	failWidth := int(float64(summary.Failed) / float64(summary.Total) * float64(width))
-	skipWidth := width - passWidth - failWidth
+	remainder := width - passWidth - failWidth
+	skipWidth := 0
 
-	passBar := lipgloss.NewStyle().
-		Foreground(greenColor).
-		Render(strings.Repeat("━", passWidth))
-	failBar := lipgloss.NewStyle().
-		Foreground(redColor).
-		Render(strings.Repeat("━", failWidth))
-	skipBar := lipgloss.NewStyle().
-		Foreground(yellowColor).
-		Render(strings.Repeat("━", skipWidth))
+	if summary.Skipped == 0 {
+		failWidth += remainder
+	} else {
+		skipWidth = remainder
+	}
+
+	passBar := passStyle.Render(strings.Repeat("━", passWidth))
+	failBar := failStyle.Render(strings.Repeat("━", failWidth))
+	skipBar := skipStyle.Render(strings.Repeat("━", skipWidth))
 
 	return lipgloss.JoinHorizontal(lipgloss.Top, passBar, failBar, skipBar)
 }

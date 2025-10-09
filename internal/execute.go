@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/yarlson/pin"
 )
 
@@ -26,11 +27,8 @@ func Execute(args []string) {
 		cmdArgs = append(cmdArgs, args...)
 	}
 
-	fmt.Println(AppOverallOutputStyle.Render(Header()))
-
 	if benchMode {
 		p := pin.New(" Running benchmarks...",
-			pin.WithDoneSymbol('\r'),
 			pin.WithPosition(pin.PositionRight),
 			pin.WithTextColor(pin.ColorCyan),
 			pin.WithSpinnerColor(pin.ColorMagenta),
@@ -58,7 +56,7 @@ func Execute(args []string) {
 			displayBenchmarkResults(summary)
 		}
 	} else {
-		fmt.Println("") // After benchmark spinner stops, it'll leave an empty line. This mimics that
+		lipgloss.Println("") // After benchmark spinner stops, it'll leave an empty line. This mimics that
 		summary, err := runTests(cmdArgs)
 		if err != nil {
 			fmt.Fprintf(

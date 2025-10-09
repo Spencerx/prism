@@ -1,4 +1,3 @@
-Require prism
 Output "./assets/fails.gif"
 
 Set Width 700
@@ -8,6 +7,7 @@ Set FontSize 14
 
 Hide
 Type "go install ." Enter
+Type "prism config clear" Enter
 Type "clear" Enter
 Show
 

@@ -2,16 +2,11 @@
 
 version: "3"
 
-vars:
-  GREETING: Hello, World!
-
 tasks:
   demos:
+    sources:
+      - "./assets/*.tape"
     cmds:
-      # TODO: See if I can loop over *.tape in a dir instead of... this
-      - vhs "./assets/bench.tape"
-      - vhs "./assets/demo.tape"
-      - vhs "./assets/fails.tape"
-      - vhs "./assets/simple.tape"
-      - vhs "./assets/verbose.tape"
+      - for: sources
+        cmd: vhs {{ .ITEM }}
     silent: true
