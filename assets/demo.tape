@@ -12,13 +12,16 @@ Type "clear" Enter
 Show
 
 Type "prism" Enter
-Sleep 5
+Sleep 3
 
 Type "prism -v ./examples/pkg1" Enter
-Sleep 5
+Sleep 3
+
+Type "prism --no-color ./examples/pkg2" Enter
+Sleep 3
 
 Type "prism -f ./examples/pkg1 ./examples/pkg3" Enter
-Sleep 5
+Sleep 3
 
 Type "prism ./examples/empty_dir" Enter
-Sleep 8
+Sleep 5

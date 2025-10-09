@@ -57,6 +57,8 @@ Just run `prism` in your module directory. Anywhere you'd run `go test`, use `pr
 
 `--no-color` OR `--show-color` to force showing or hiding color
 
+![colors demo](./assets/colors.gif)
+
 Anything else will be appended directly to `go test -json`
 
 ### Benchmarking
