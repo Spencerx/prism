@@ -12,7 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/yarlson/pin"
 )
 
@@ -56,8 +55,19 @@ func Execute(args []string) {
 			displayBenchmarkResults(summary)
 		}
 	} else {
-		lipgloss.Println("") // After benchmark spinner stops, it'll leave an empty line. This mimics that
+		p := pin.New(" Running tests...",
+			pin.WithPosition(pin.PositionRight),
+			pin.WithTextColor(pin.ColorCyan),
+			pin.WithSpinnerColor(pin.ColorMagenta),
+		)
+
+		cancel := p.Start(context.Background())
+		defer cancel()
+
 		summary, err := runTests(cmdArgs)
+
+		p.Stop("")
+
 		if err != nil {
 			fmt.Fprintf(
 				os.Stderr,
