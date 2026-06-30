@@ -21,11 +21,12 @@ const (
 var configPathOverride = os.Getenv("PRISM_CONFIG_FILE")
 
 type Config struct {
-	Verbose   bool `json:"verbose"`
-	OnlyFails bool `json:"only_fails"`
-	NoBar     bool `json:"no_bar"`
-	NoColor   bool `json:"no_color"`
-	ShowColor bool `json:"show_color"`
+	Verbose    bool `json:"verbose"`
+	OnlyFails  bool `json:"only_fails"`
+	NoBar      bool `json:"no_bar"`
+	NoColor    bool `json:"no_color"`
+	ShowColor  bool `json:"show_color"`
+	ShowHeader bool `json:"show_header"`
 }
 
 // GlobalConfig holds the active configuration for the current process.
@@ -155,6 +156,9 @@ func SetConfig(cfg Config, key string, value bool) error {
 
 		cfg.NoColor = !value
 		fmt.Printf("\n%v -> %v", "no_color", styleBool(cfg.NoColor))
+	case "show_header", "show-header":
+		cfg.ShowHeader = value
+		outBool = styleBool(cfg.ShowHeader)
 	default:
 		return fmt.Errorf("Unknown configuration key %q", key)
 	}
@@ -172,6 +176,7 @@ func PrintConfig(cfg Config) {
 			[]string{"no_bar", styleBool(cfg.NoBar)},
 			[]string{"no_color", styleBool(cfg.NoColor)},
 			[]string{"show_color", styleBool(cfg.ShowColor)},
+			[]string{"show_header", styleBool(cfg.ShowHeader)},
 			[]string{"only_fails", styleBool(cfg.OnlyFails)},
 			[]string{"verbose", styleBool(cfg.Verbose)},
 		).

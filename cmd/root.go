@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	Version       = "1.3"
+	Version       = "1.3.1"
 	configLoadErr error
 )
 
@@ -29,6 +29,10 @@ Issues? Requests? Feedback? Let me know! -- github.com/DaltonSW/prism`,
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		if internal.GlobalConfig.ShowHeader {
+			fmt.Println(internal.Header())
+		}
+
 		internal.Execute(args)
 	},
 }
@@ -51,6 +55,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.Verbose, "verbose", "v", internal.GlobalConfig.Verbose, "Include test sub-output")
 	rootCmd.PersistentFlags().BoolVarP(&internal.GlobalConfig.OnlyFails, "only-fails", "f", internal.GlobalConfig.OnlyFails, "Only run failing tests")
 	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoBar, "no-bar", internal.GlobalConfig.NoBar, "Hide the summary bar at the end of test output")
+	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.ShowHeader, "show-header", internal.GlobalConfig.ShowHeader, "Show the stylized `prism` header ahead of output")
 
 	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.NoColor, "no-color", internal.GlobalConfig.NoColor, "Disable color output entirely")
 	rootCmd.PersistentFlags().BoolVar(&internal.GlobalConfig.ShowColor, "color", internal.GlobalConfig.ShowColor, "Force color output, overridding NO_COLOR environment variable")
