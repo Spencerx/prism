@@ -33,11 +33,15 @@ func Execute(args []string) {
 			pin.WithSpinnerColor(pin.ColorMagenta),
 		)
 
+		// Match the top margin of the summary so the spinner doesn't sit flush
+		fmt.Print(spinnerMarginStyle.Render(""))
 		cancel := p.Start(context.Background())
 		defer cancel()
+		stopTimer := startElapsedTimer(p, "Running benchmarks...")
 
 		summary, err := runBenchmarks(cmdArgs)
 
+		stopTimer()
 		p.Stop()
 
 		if err != nil {
@@ -61,11 +65,17 @@ func Execute(args []string) {
 			pin.WithSpinnerColor(pin.ColorMagenta),
 		)
 
+		// Match the top margin of the summary so the spinner doesn't sit flush
+		fmt.Print(spinnerMarginStyle.Render(""))
 		cancel := p.Start(context.Background())
 		defer cancel()
+		stopTimer := startElapsedTimer(p, "Running tests...")
 
+		start := time.Now()
 		summary, err := runTests(cmdArgs)
+		elapsed := time.Since(start)
 
+		stopTimer()
 		p.Stop()
 
 		if err != nil {
@@ -77,6 +87,8 @@ func Execute(args []string) {
 			os.Exit(1)
 		}
 
+		summary.Elapsed = elapsed
+
 		// Capture all display output as a single string and wrap it
 		if summary.Total == 0 {
 			displayZeroState()
@@ -85,6 +97,37 @@ func Execute(args []string) {
 		}
 	}
 
+}
+
+// startElapsedTimer updates the spinner label once a second with the elapsed
+// runtime, e.g. "Running tests... (3s)". The returned func stops the ticker and
+// must be called before p.Stop().
+func startElapsedTimer(p *pin.Pin, label string) func() {
+	start := time.Now()
+	ticker := time.NewTicker(time.Second)
+	done := make(chan struct{})
+
+	render := func() {
+		elapsed := time.Since(start).Round(time.Second)
+		p.UpdateMessage(fmt.Sprintf(" %s (%s)", label, elapsed))
+	}
+	render() // show "(0s)" immediately so the timer doesn't jump in at 1s
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case <-ticker.C:
+				render()
+			}
+		}
+	}()
+
+	return func() {
+		ticker.Stop()
+		close(done)
+	}
 }
 
 func containsBenchmarkFlag(args []string) bool {
@@ -114,7 +157,8 @@ func runTests(args []string) (*TestSummary, error) {
 	}
 
 	summary := &TestSummary{
-		Results: make([]TestResult, 0),
+		Results:        make([]TestResult, 0),
+		CachedPackages: make(map[string]bool),
 	}
 	testMap := make(map[string]*TestResult)
 
@@ -278,6 +322,11 @@ func runBenchmarks(args []string) (*BenchmarkSummary, error) {
 
 func processEvent(event *TestEvent, testMap map[string]*TestResult, summary *TestSummary) {
 	if event.Test == "" {
+		if Status(event.Action) == StatusOutput && strings.Contains(event.Output, "(cached)") {
+			summary.Lock()
+			summary.CachedPackages[event.Package] = true
+			summary.Unlock()
+		}
 		return
 	}
 

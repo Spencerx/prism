@@ -19,7 +19,7 @@ var (
 	benchmarkLabelStyle  = lipgloss.NewStyle().Foreground(lipgloss.BrightCyan).Bold(true)
 	benchmarkHeaderStyle = lipgloss.NewStyle().Foreground(lipgloss.BrightBlack).Bold(true)
 	benchmarkMetricStyle = lipgloss.NewStyle().Foreground(lipgloss.BrightBlack)
-	benchmarkNoticeStyle = lipgloss.NewStyle().Foreground(lipgloss.BrightCyan).Padding(1).Bold(true)
+	benchmarkNoticeStyle = lipgloss.NewStyle().Foreground(lipgloss.BrightCyan).Padding(0, 1, 1, 1).Bold(true)
 
 	outputStyle = lipgloss.NewStyle().Foreground(lipgloss.White).Italic(true).MarginLeft(3)
 	errorStyle  = lipgloss.NewStyle().Foreground(lipgloss.BrightRed).Bold(true)
@@ -27,7 +27,13 @@ var (
 	packageSeparatorStyle = lipgloss.NewStyle().Foreground(lipgloss.BrightBlack)
 
 	// AppOverallOutputStyle is the top-level style that wraps all the display output.
+	// The single top margin is emitted by spinnerMarginStyle before the spinner; the
+	// summary then renders flush onto the line the spinner reclaims when it stops.
 	AppOverallOutputStyle = lipgloss.NewStyle().AlignHorizontal(lipgloss.Center).MarginLeft(1)
+
+	// spinnerMarginStyle gives the running spinner a top margin. The summary and the
+	// zero-state notices render flush below it, so this is the only top margin shown.
+	spinnerMarginStyle = lipgloss.NewStyle().MarginTop(1)
 
 	// Style for the package test table
 	pkgTableStyle = lipgloss.NewStyle().
@@ -64,7 +70,7 @@ func Header() string {
 
 func displayZeroState() {
 	fmt.Println(lipgloss.NewStyle().
-		Padding(1).
+		Padding(0, 1, 1, 1).
 		Bold(true).
 		Foreground(lipgloss.Red).
 		Render("No tests found. Get to writing!"),

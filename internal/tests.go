@@ -70,16 +70,19 @@ type PackageResults struct {
 	Failed   int
 	Skipped  int
 	Duration time.Duration // Sum of individual test durations in the package
+	Cached   bool          // Result was served from the test cache
 }
 
 // --- TestSummary (Overall results of the entire test run) ---
 type TestSummary struct {
-	sync.Mutex              // Protects global counters
-	Results    []TestResult // Flat list of all individual test results
-	Passed     int
-	Failed     int
-	Skipped    int
-	Total      int
+	sync.Mutex                  // Protects global counters
+	Results        []TestResult // Flat list of all individual test results
+	Passed         int
+	Failed         int
+	Skipped        int
+	Total          int
+	Elapsed        time.Duration   // Wall-clock time of the whole run
+	CachedPackages map[string]bool // Packages served from the test cache
 }
 
 func (summary *TestSummary) String() string {
@@ -98,6 +101,7 @@ func displayResults(overallSummary *TestSummary) {
 				Name:   pkgName,
 				Tests:  []TestResult{},
 				Status: StatusPass,
+				Cached: overallSummary.CachedPackages[pkgName],
 			}
 		}
 		pkgResults := groupedByPackage[pkgName]
@@ -146,6 +150,9 @@ func displayPackageBlock(pkgResults *PackageResults) string {
 	}
 
 	pkgHeader := fmt.Sprintf("%v %v %v", pkgResults.Status.String(), packageStyle.Render(pkgResults.Name), durationStyle.Render(fmt.Sprintf("(%v)", pkgResults.Duration)))
+	if pkgResults.Cached {
+		pkgHeader += " " + durationStyle.Render("(cached)")
+	}
 
 	pkgTestResults := fmt.Sprintf(
 		"%d total • %s • %s • %s",
@@ -226,11 +233,12 @@ func generateTestRows(tests []TestResult) [][]string {
 func displayOverallSummary(summary *TestSummary) string {
 	out := "Overall Test Results\n"
 	out += fmt.Sprintf(
-		"%d total • %s • %s • %s",
+		"%d total • %s • %s • %s • %s",
 		summary.Total,
 		passStyle.Render(fmt.Sprintf("%d passed", summary.Passed)),
 		failStyle.Render(fmt.Sprintf("%d failed", summary.Failed)),
 		skipStyle.Render(fmt.Sprintf("%d skipped", summary.Skipped)),
+		durationStyle.Render(summary.Elapsed.Truncate(time.Millisecond).String()),
 	)
 	if !GlobalConfig.NoBar {
 		out += "\n" + renderProportionalBar(summary, lipgloss.Width(out))
