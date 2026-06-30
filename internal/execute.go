@@ -38,7 +38,7 @@ func Execute(args []string) {
 
 		summary, err := runBenchmarks(cmdArgs)
 
-		p.Stop("")
+		p.Stop()
 
 		if err != nil {
 			fmt.Fprintf(
@@ -66,7 +66,7 @@ func Execute(args []string) {
 
 		summary, err := runTests(cmdArgs)
 
-		p.Stop("")
+		p.Stop()
 
 		if err != nil {
 			fmt.Fprintf(
