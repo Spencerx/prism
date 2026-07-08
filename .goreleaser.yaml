@@ -16,6 +16,8 @@ builds:
     goos:
       - linux
       - darwin
+    ldflags:
+      - -s -w -X go.dalton.dog/prism/cmd.Version={{.Version}}
 
 homebrew_casks:
   - name: prism

@@ -9,10 +9,11 @@ import (
 	"github.com/spf13/cobra"
 
 	"go.dalton.dog/prism/internal"
+	"go.dalton.dog/prism/internal/version"
 )
 
 var (
-	Version       = "1.3.1"
+	Version       = "dev"
 	configLoadErr error
 )
 
@@ -40,6 +41,10 @@ Issues? Requests? Feedback? Let me know! -- github.com/DaltonSW/prism`,
 func Execute() {
 	if configLoadErr != nil {
 		fmt.Fprintf(os.Stderr, "Unable to load persisted config: %v\n", configLoadErr)
+	}
+
+	if Version == "dev" {
+		Version = version.ResolveDev()
 	}
 
 	if err := fang.Execute(context.Background(), rootCmd, fang.WithoutCompletions(), fang.WithVersion(Version)); err != nil {

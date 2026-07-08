@@ -2,7 +2,16 @@
 
 version: "3"
 
+vars:
+  VERSION:
+    sh: git describe --tags --always --dirty 2>/dev/null || echo dev
+  LDFLAGS: -s -w -X go.dalton.dog/prism/cmd.Version={{.VERSION}}
+
 tasks:
+  build:
+    desc: Build the versioned binary
+    cmd: go build -ldflags "{{.LDFLAGS}}" -o prism .
+
   demos:
     sources:
       - "./assets/*.tape"
